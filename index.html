@@ -47,32 +47,41 @@
 <body>
   <h1>🎵 Ma sélection</h1>
 
-  <!-- lecteur unique -->
   <audio id="player" controls></audio>
 
-  <!-- playlist -->
-  <ul id="playlist">
-    <li data-src="musique1.mp3">Morceau 1</li>
-    <li data-src="musique2.mp3">Morceau 2</li>
-    <li data-src="musique3.mp3">Morceau 3</li>
-  </ul>
+  <ul id="playlist"></ul>
 
   <script>
+    const playlist = document.getElementById('playlist');
     const player = document.getElementById('player');
-    const tracks = document.querySelectorAll('#playlist li');
 
-    tracks.forEach(track => {
-      track.addEventListener('click', () => {
-        tracks.forEach(t => t.classList.remove('active'));
-        track.classList.add('active');
-        player.src = track.getAttribute('data-src');
-        player.play();
+    // Charger la playlist depuis le fichier JSON
+    fetch('musique/playlist.json')
+      .then(res => res.json())
+      .then(files => {
+        files.forEach(file => {
+          const li = document.createElement('li');
+          li.textContent = file.replace(".mp3", "");
+          li.dataset.src = "musique/" + file;
+          li.addEventListener('click', () => {
+            document.querySelectorAll('#playlist li').forEach(el => el.classList.remove('active'));
+            li.classList.add('active');
+            player.src = li.dataset.src;
+            player.play();
+          });
+          playlist.appendChild(li);
+        });
+
+        // Charger automatiquement le premier morceau
+        const first = playlist.querySelector('li');
+        if (first) {
+          first.classList.add('active');
+          player.src = first.dataset.src;
+        }
+      })
+      .catch(err => {
+        console.error("Impossible de charger la playlist :", err);
       });
-    });
-
-    // Charger le premier morceau automatiquement
-    tracks[0].classList.add('active');
-    player.src = tracks[0].getAttribute('data-src');
   </script>
 </body>
 </html>
