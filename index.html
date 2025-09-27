@@ -87,5 +87,45 @@ async function loadPlaylist(folder, containerId) {
     const tracks = await response.json();
 
     const container = document.querySelector(`#${containerId} .tracks`);
-    const player = document.g
+    const player = document.getElementById("audioPlayer");
+
+    tracks.forEach(track => {
+      let title, file;
+
+      if (typeof track === "string") {
+        title = track;
+        file = track;
+      } else {
+        title = track.title;
+        file = track.file;
+      }
+
+      const div = document.createElement("div");
+      div.className = "track";
+      div.textContent = title;
+      div.onclick = () => {
+        player.src = `${folder}/${file}`;
+        player.play();
+
+        if (currentTrackElement) {
+          currentTrackElement.classList.remove("active");
+        }
+        div.classList.add("active");
+        currentTrackElement = div;
+      };
+      container.appendChild(div);
+    });
+  } catch (err) {
+    console.error("Erreur lors du chargement de la playlist :", err);
+  }
+}
+
+loadPlaylist("musique", "musique");
+loadPlaylist("musique2", "musique2");
+</script>
+
+</body>
+</html>
+
+
 
