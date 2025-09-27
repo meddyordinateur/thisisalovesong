@@ -23,6 +23,7 @@
       border: 1px solid #ccc;
       border-radius: 8px;
       padding: 10px;
+      overflow-y: auto;
     }
     .playlist h2 {
       margin-top: 0;
@@ -66,22 +67,38 @@
 
 <script>
 async function loadPlaylist(folder, containerId) {
-  const response = await fetch(`${folder}/playlist.json`);
-  const tracks = await response.json();
+  try {
+    const response = await fetch(`${folder}/playlist.json`);
+    const tracks = await response.json();
 
-  const container = document.querySelector(`#${containerId} .tracks`);
-  const player = document.getElementById("audioPlayer");
+    const container = document.querySelector(`#${containerId} .tracks`);
+    const player = document.getElementById("audioPlayer");
 
-  tracks.forEach(track => {
-    const div = document.createElement("div");
-    div.className = "track";
-    div.textContent = track.title;
-    div.onclick = () => {
-      player.src = `${folder}/${track.file}`;
-      player.play();
-    };
-    container.appendChild(div);
-  });
+    tracks.forEach(track => {
+      let title, file;
+
+      if (typeof track === "string") {
+        // Cas JSON = ["fichier.mp3", ...]
+        title = track;
+        file = track;
+      } else {
+        // Cas JSON = [{ "title": "...", "file": "..." }, ...]
+        title = track.title;
+        file = track.file;
+      }
+
+      const div = document.createElement("div");
+      div.className = "track";
+      div.textContent = title;
+      div.onclick = () => {
+        player.src = `${folder}/${file}`;
+        player.play();
+      };
+      container.appendChild(div);
+    });
+  } catch (err) {
+    console.error("Erreur lors du chargement de la playlist :", err);
+  }
 }
 
 loadPlaylist("musique", "musique");
@@ -90,5 +107,4 @@ loadPlaylist("musique2", "musique2");
 
 </body>
 </html>
-
 
