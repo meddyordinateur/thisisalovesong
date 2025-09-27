@@ -2,87 +2,92 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>this is a love song</title>
+  <title>Lecteur audio simple</title>
   <style>
     body {
-      background: #111;
-      color: #eee;
       font-family: sans-serif;
+      margin: 0;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      padding: 30px;
+      height: 100vh;
     }
-    h1 {
-      font-size: 1.4rem;
-      margin-bottom: 20px;
+    main {
+      flex: 1;
+      display: flex;
+      padding: 20px;
+      box-sizing: border-box;
+      gap: 20px;
+    }
+    .playlist {
+      flex: 1;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+    }
+    .playlist h2 {
+      margin-top: 0;
+      font-size: 18px;
+    }
+    .track {
+      cursor: pointer;
+      margin: 5px 0;
+      padding: 5px;
+      border-radius: 4px;
+    }
+    .track:hover {
+      background: #f0f0f0;
+    }
+    footer {
+      padding: 10px;
+      border-top: 1px solid #ccc;
+      background: #fafafa;
     }
     audio {
       width: 100%;
-      margin-bottom: 20px;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-      width: 100%;
-      max-width: 400px;
-    }
-    li {
-      background: #222;
-      padding: 10px;
-      margin: 5px 0;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    li:hover {
-      background: #333;
-    }
-    .active {
-      background: #444;
-      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h1>playlist</h1>
 
-  <audio id="player" controls></audio>
+<main>
+  <div class="playlist" id="playlist1">
+    <h2>Playlist 1</h2>
+    <div class="tracks"></div>
+  </div>
+  <div class="playlist" id="playlist2">
+    <h2>Playlist 2</h2>
+    <div class="tracks"></div>
+  </div>
+</main>
 
-  <ul id="playlist"></ul>
+<footer>
+  <audio id="audioPlayer" controls></audio>
+</footer>
 
-  <script>
-    const playlist = document.getElementById('playlist');
-    const player = document.getElementById('player');
+<script>
+async function loadPlaylist(folder, containerId) {
+  const response = await fetch(`${folder}/playlist.json`);
+  const tracks = await response.json();
 
-    // Charger la playlist depuis le fichier JSON
-    fetch('musique/playlist.json')
-      .then(res => res.json())
-      .then(files => {
-        files.forEach(file => {
-          const li = document.createElement('li');
-          li.textContent = file.replace(".mp3", "");
-          li.dataset.src = "musique/" + file;
-          li.addEventListener('click', () => {
-            document.querySelectorAll('#playlist li').forEach(el => el.classList.remove('active'));
-            li.classList.add('active');
-            player.src = li.dataset.src;
-            player.play();
-          });
-          playlist.appendChild(li);
-        });
+  const container = document.querySelector(`#${containerId} .tracks`);
+  const player = document.getElementById("audioPlayer");
 
-        // Charger automatiquement le premier morceau
-        const first = playlist.querySelector('li');
-        if (first) {
-          first.classList.add('active');
-          player.src = first.dataset.src;
-        }
-      })
-      .catch(err => {
-        console.error("Impossible de charger la playlist :", err);
-      });
-  </script>
+  tracks.forEach(track => {
+    const div = document.createElement("div");
+    div.className = "track";
+    div.textContent = track.title;
+    div.onclick = () => {
+      player.src = `${folder}/${track.file}`;
+      player.play();
+    };
+    container.appendChild(div);
+  });
+}
+
+loadPlaylist("playlist1", "playlist1");
+loadPlaylist("playlist2", "playlist2");
+</script>
+
 </body>
 </html>
 
