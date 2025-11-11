@@ -10,13 +10,15 @@
       display: flex;
       flex-direction: column;
       height: 100vh;
+      background-color: #1a274b;
+      color: #d66ca7;
     }
     header {
       text-align: center;
       padding: 20px;
       font-size: 24px;
       font-weight: bold;
-      border-bottom: 1px solid #ccc;
+      border-bottom: 1px solid #d66ca7;
     }
     main {
       flex: 1;
@@ -27,7 +29,7 @@
     }
     .playlist {
       flex: 1;
-      border: 1px solid #ccc;
+      border: 1px solid #d66ca7;
       border-radius: 8px;
       padding: 10px;
       overflow-y: auto;
@@ -35,24 +37,26 @@
     .playlist h2 {
       margin-top: 0;
       font-size: 18px;
+      color: #d66ca7;
     }
     .track {
       cursor: pointer;
       margin: 5px 0;
       padding: 5px;
       border-radius: 4px;
+      transition: background 0.2s;
     }
     .track:hover {
-      background: #f0f0f0;
+      background: rgba(214,108,167,0.2);
     }
     .track.active {
-      background: #cce5ff;
+      background: rgba(214,108,167,0.4);
       font-weight: bold;
     }
     footer {
       padding: 10px;
-      border-top: 1px solid #ccc;
-      background: #fafafa;
+      border-top: 1px solid #d66ca7;
+      background: #1a274b;
     }
     audio {
       width: 100%;
@@ -80,6 +84,7 @@
 
 <script>
 let currentTrackElement = null;
+let currentPlaylist = null;
 
 async function loadPlaylist(folder, containerId) {
   try {
@@ -89,9 +94,8 @@ async function loadPlaylist(folder, containerId) {
     const container = document.querySelector(`#${containerId} .tracks`);
     const player = document.getElementById("audioPlayer");
 
-    tracks.forEach(track => {
+    tracks.forEach((track, index) => {
       let title, file;
-
       if (typeof track === "string") {
         title = track;
         file = track;
@@ -103,16 +107,11 @@ async function loadPlaylist(folder, containerId) {
       const div = document.createElement("div");
       div.className = "track";
       div.textContent = title;
-      div.onclick = () => {
-        player.src = `${folder}/${file}`;
-        player.play();
 
-        if (currentTrackElement) {
-          currentTrackElement.classList.remove("active");
-        }
-        div.classList.add("active");
-        currentTrackElement = div;
+      div.onclick = () => {
+        playTrack(folder, file, div, container);
       };
+
       container.appendChild(div);
     });
   } catch (err) {
@@ -120,12 +119,40 @@ async function loadPlaylist(folder, containerId) {
   }
 }
 
+function playTrack(folder, file, trackElement, container) {
+  const player = document.getElementById("audioPlayer");
+  player.src = `${folder}/${file}`;
+  player.play();
+
+  if (currentTrackElement) {
+    currentTrackElement.classList.remove("active");
+  }
+  trackElement.classList.add("active");
+  currentTrackElement = trackElement;
+  currentPlaylist = container;
+}
+
+// lecture automatique du morceau suivant dans la même colonne
+document.getElementById("audioPlayer").addEventListener("ended", () => {
+  if (!currentPlaylist || !currentTrackElement) return;
+
+  const tracks = Array.from(currentPlaylist.querySelectorAll(".track"));
+  const currentIndex = tracks.indexOf(currentTrackElement);
+
+  if (currentIndex >= 0 && currentIndex < tracks.length - 1) {
+    const nextTrack = tracks[currentIndex + 1];
+    nextTrack.click();
+  }
+});
+
 loadPlaylist("musique", "musique");
 loadPlaylist("musique2", "musique2");
 </script>
 
 </body>
 </html>
+
+
 
 
 
