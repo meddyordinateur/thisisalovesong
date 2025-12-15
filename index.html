@@ -75,24 +75,26 @@
 <body>
 
 <header>this is a love song</header>
-
 <main>
-<div class="playlist" id="musique">
-  <h2>Meddor</h2>
+  <div class="playlist" id="musique">
+    <h2>Meddor</h2>
 
-  <img 
-    src="musique/pochette.jpg"
-    alt="Meddor"
-    class="album-cover"
-    onclick="document.querySelector('#musique .track')?.click()"
-    </div>
+    <img 
+      src="musique/pochette.jpg"
+      alt="Meddor"
+      class="album-cover"
+      onclick="document.querySelector('#musique .track')?.click()"
+    />
+
+    <div class="tracks"></div>
+  </div>
+
   <div class="playlist" id="musique2">
     <h2>Discographie</h2>
-
-  <div class="tracks"></div>
-</div>
-
+    <div class="tracks"></div>
+  </div>
 </main>
+
 
 <footer>
   <audio id="audioPlayer" controls></audio>
@@ -167,6 +169,7 @@ loadPlaylist("musique2", "musique2");
 
 </body>
 </html>
+
 
 
 
