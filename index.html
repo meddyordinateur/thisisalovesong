@@ -61,6 +61,15 @@
     audio {
       width: 100%;
     }
+    .album-cover {
+  width: 100%;
+  max-width: 250px;
+  display: block;
+  margin: 0 auto 15px auto;
+  border-radius: 6px;
+  border: 1px solid #d66ca7;
+}
+
   </style>
 </head>
 <body>
@@ -68,14 +77,19 @@
 <header>this is a love song</header>
 
 <main>
-  <div class="playlist" id="musique">
-    <h2>Meddor</h2>
-    <div class="tracks"></div>
-  </div>
-  <div class="playlist" id="musique2">
-    <h2>Discographie</h2>
-    <div class="tracks"></div>
-  </div>
+<div class="playlist" id="musique">
+  <h2>Meddor</h2>
+
+  <img 
+    src="musique/pochette.jpg"
+    alt="Meddor"
+    class="album-cover"
+    onclick="document.querySelector('#musique .track')?.click()"
+  >
+
+  <div class="tracks"></div>
+</div>
+
 </main>
 
 <footer>
@@ -151,6 +165,7 @@ loadPlaylist("musique2", "musique2");
 
 </body>
 </html>
+
 
 
 
