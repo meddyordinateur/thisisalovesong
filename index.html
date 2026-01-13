@@ -45,6 +45,10 @@
       padding: 5px;
       border-radius: 4px;
       transition: background 0.2s;
+        display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
     }
     .track:hover {
       background: rgba(214,108,167,0.2);
@@ -69,10 +73,63 @@
   border-radius: 6px;
   border: 1px solid #d66ca7;
 }
+.lyrics-btn {
+  font-size: 12px;
+  padding: 2px 6px;
+  border: 1px solid #d66ca7;
+  background: transparent;
+  color: #d66ca7;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.lyrics-btn:hover {
+  background: rgba(214,108,167,0.2);
+}
+
+/* fenêtre paroles */
+#lyricsOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26,39,75,0.85);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+#lyricsBox {
+  background: #1a274b;
+  border: 1px solid #d66ca7;
+  color: #d66ca7;
+  padding: 20px;
+  max-width: 600px;
+  max-height: 70vh;
+  overflow-y: auto;
+  border-radius: 8px;
+  white-space: pre-wrap;
+}
+
+#lyricsClose {
+  display: block;
+  margin-bottom: 10px;
+  cursor: pointer;
+  text-align: right;
+  font-weight: bold;
+}
 
   </style>
 </head>
+
 <body>
+
+  
+  <div id="lyricsOverlay">
+  <div id="lyricsBox">
+    <div id="lyricsClose">✕ fermer</div>
+    <div id="lyricsContent"></div>
+  </div>
+</div>
 
 <header>this is a love song</header>
 <main>
@@ -112,28 +169,43 @@ async function loadPlaylist(folder, containerId) {
     const container = document.querySelector(`#${containerId} .tracks`);
     const player = document.getElementById("audioPlayer");
 
-    tracks.forEach((track, index) => {
-      let title, file;
+    tracks.forEach(track => {
+      let title, file, lyrics;
+
       if (typeof track === "string") {
         title = track;
         file = track;
       } else {
         title = track.title;
         file = track.file;
+        lyrics = track.lyrics;
       }
 
       const div = document.createElement("div");
       div.className = "track";
-      div.textContent = title;
 
-      div.onclick = () => {
-        playTrack(folder, file, div, container);
-      };
+      const titleSpan = document.createElement("span");
+      titleSpan.textContent = title;
+      titleSpan.onclick = () => playTrack(folder, file, div, container);
+
+      div.appendChild(titleSpan);
+
+      // bouton paroles UNIQUEMENT pour la colonne gauche
+      if (lyrics && containerId === "musique") {
+        const btn = document.createElement("button");
+        btn.className = "lyrics-btn";
+        btn.textContent = "paroles";
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          showLyrics(lyrics);
+        };
+        div.appendChild(btn);
+      }
 
       container.appendChild(div);
     });
   } catch (err) {
-    console.error("Erreur lors du chargement de la playlist :", err);
+    console.error("Erreur playlist :", err);
   }
 }
 
@@ -150,25 +222,32 @@ function playTrack(folder, file, trackElement, container) {
   currentPlaylist = container;
 }
 
-// lecture automatique du morceau suivant dans la même colonne
 document.getElementById("audioPlayer").addEventListener("ended", () => {
   if (!currentPlaylist || !currentTrackElement) return;
 
   const tracks = Array.from(currentPlaylist.querySelectorAll(".track"));
-  const currentIndex = tracks.indexOf(currentTrackElement);
-
-  if (currentIndex >= 0 && currentIndex < tracks.length - 1) {
-    const nextTrack = tracks[currentIndex + 1];
-    nextTrack.click();
-  }
+  const index = tracks.indexOf(currentTrackElement);
+  if (index < tracks.length - 1) tracks[index + 1].click();
 });
+
+// paroles
+function showLyrics(text) {
+  document.getElementById("lyricsContent").textContent = text;
+  document.getElementById("lyricsOverlay").style.display = "flex";
+}
+
+document.getElementById("lyricsClose").onclick = () => {
+  document.getElementById("lyricsOverlay").style.display = "none";
+};
 
 loadPlaylist("musique", "musique");
 loadPlaylist("musique2", "musique2");
 </script>
 
+
 </body>
 </html>
+
 
 
 
