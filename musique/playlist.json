@@ -1,11 +1,43 @@
 [
-  "Amoureux d'un ange.mp3",
-  "Beau garçon.mp3",
-  "Je pense à toi.mp3",
-  "Babydoll.mp3",
-  "Beau garçon.mp3",
-  "Jolies filles, jolis garçons.mp3",
-  "Je t'aime à la one again.mp3",
-  "Le bassin d'arcachon.mp3",
-  "La douleur.mp3"
+  {
+    "title": "Amoureux d'un ange",
+    "file": "Amoureux d'un ange.mp3",
+    "lyrics": ""
+  },
+  {
+    "title": "Beau garçon",
+    "file": "Beau garçon.mp3",
+    "lyrics": ""
+  },
+  {
+    "title": "Je pense à toi",
+    "file": "Je pense à toi.mp3",
+    "lyrics": ""
+  },
+  {
+    "title": "Babydoll",
+    "file": "Babydoll.mp3",
+    "lyrics": ""
+  },
+
+  {
+    "title": "Jolies filles, jolis garçons",
+    "file": "Jolies filles, jolis garçons.mp3",
+    "lyrics": ""
+  },
+  {
+    "title": "Je t'aime à la one again",
+    "file": "Je t'aime à la one again.mp3",
+    "lyrics": ""
+  },
+  {
+    "title": "Le bassin d'arcachon",
+    "file": "Le bassin d'arcachon.mp3",
+    "lyrics": ""
+  },
+  {
+    "title": "La douleur",
+    "file": "La douleur.mp3",
+    "lyrics": ""
+  }
 ]
