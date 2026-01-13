@@ -208,7 +208,6 @@ async function loadPlaylist(folder, containerId) {
     console.error("Erreur playlist :", err);
   }
 }
-
 function playTrack(folder, file, trackElement, container) {
   const player = document.getElementById("audioPlayer");
   player.src = `${folder}/${file}`;
@@ -219,16 +218,23 @@ function playTrack(folder, file, trackElement, container) {
   }
   trackElement.classList.add("active");
   currentTrackElement = trackElement;
-  currentPlaylist = container;
+  currentPlaylist = container; // ça met bien currentPlaylist à la colonne actuelle
 }
 
 document.getElementById("audioPlayer").addEventListener("ended", () => {
   if (!currentPlaylist || !currentTrackElement) return;
 
   const tracks = Array.from(currentPlaylist.querySelectorAll(".track"));
-  const index = tracks.indexOf(currentTrackElement);
-  if (index < tracks.length - 1) tracks[index + 1].click();
+
+  const index = tracks.findIndex(t => t === currentTrackElement);
+  if (index >= 0 && index < tracks.length - 1) {
+    const nextTrack = tracks[index + 1];
+
+    // déclenche la lecture automatique seulement si nextTrack existe
+    nextTrack.querySelector("span").click();
+  }
 });
+
 
 // paroles
 function showLyrics(text) {
@@ -247,6 +253,7 @@ loadPlaylist("musique2", "musique2");
 
 </body>
 </html>
+
 
 
 
